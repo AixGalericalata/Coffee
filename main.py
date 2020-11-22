@@ -1,9 +1,8 @@
 import sys
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
-from PyQt5.QtGui import QPainter, QColor
-import random
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QAbstractItemView, \
+    QHeaderView
 import sqlite3
 
 
@@ -18,14 +17,15 @@ class MyWidget(QMainWindow):
 
         result = cur.execute("""SELECT * FROM coffee""").fetchall()
 
+        roast = ['Сырые зёрна', 'Светлая', 'Средняя', 'Тёмная', 'Высшая']
         self.tableWidget.setRowCount(len(result))
         self.tableWidget.setColumnCount(7)
         for i, elem in enumerate(result):
             item0 = QTableWidgetItem(str(elem[0]))
-            item1 = QTableWidgetItem(str(elem[1]))
-            item2 = QTableWidgetItem(str(elem[2]))
-            item3 = QTableWidgetItem(str(elem[3]))
-            item4 = QTableWidgetItem(str(elem[4]))
+            item1 = QTableWidgetItem(elem[1])
+            item2 = QTableWidgetItem(roast[elem[2]])
+            item3 = QTableWidgetItem('Молотый' if elem[3] == 'True' else 'Зерновой')
+            item4 = QTableWidgetItem(elem[4])
             item5 = QTableWidgetItem(str(elem[5]))
             item6 = QTableWidgetItem(str(elem[6]))
             self.tableWidget.setItem(i, 0, item0)
@@ -36,6 +36,13 @@ class MyWidget(QMainWindow):
             self.tableWidget.setItem(i, 5, item5)
             self.tableWidget.setItem(i, 6, item6)
 
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
+        self.tableWidget.setHorizontalHeaderLabels(
+            ['Номер', 'Название сорта', 'Степень прожарки', 'Помол', 'Описание', 'Цена', 'Объем'])
+        self.tableWidget.verticalHeader().hide()
+        #  self.table.itemSelectionChanged.connect(self.selected)
+        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableWidget.resizeColumnsToContents()
 
         con.close()
 
