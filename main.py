@@ -4,6 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QAbstractItemView, \
     QHeaderView
 import sqlite3
+from add import Add
 
 
 class MyWidget(QMainWindow):
@@ -18,6 +19,9 @@ class MyWidget(QMainWindow):
         result = cur.execute("""SELECT * FROM coffee""").fetchall()
 
         roast = ['Сырые зёрна', 'Светлая', 'Средняя', 'Тёмная', 'Высшая']
+
+        self.addButton.clicked.connect(self.add)
+
         self.tableWidget.setRowCount(len(result))
         self.tableWidget.setColumnCount(7)
         for i, elem in enumerate(result):
@@ -45,6 +49,11 @@ class MyWidget(QMainWindow):
         self.tableWidget.resizeColumnsToContents()
 
         con.close()
+
+    def add(self):
+        self.add = Add()
+        self.add.show()
+
 
 
 if __name__ == '__main__':
